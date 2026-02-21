@@ -33,5 +33,5 @@ Student data is stored in a file so records remain saved even after closing the 
 
 ### Compile
 ```bash
-gcc student_manager.c -o student_manager
-./student_manager
+gcc student_record.c -o student_record
+./student_record
