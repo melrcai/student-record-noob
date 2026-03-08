@@ -1,6 +1,6 @@
-#include <stdio.h> // DAY 4 FEB 20 // MAH BDAY AND ALSO THE COMPLETION OF TS
+#include <stdio.h> // DAY 4 MARCH 3-8 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
-#include <ctype.h> // for tolower function
+#include <ctype.h> // for tolower function and isspace()
 
 struct Student { // a structure called Student → this is a data container
   int id;
@@ -8,9 +8,10 @@ struct Student { // a structure called Student → this is a data container
   float grade;
 };
 
-void addStudent(struct Student students[], int *count); // FUNCTION PROTOTYPE (DECLARATION)
+int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (DECLARATION)
+void addStudent(struct Student students[], int *count); 
 void viewStudents(struct Student students[], int count);
-void searchStudent(struct Student students[], int count);
+int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
 void bubbleSort (struct Student students[], int count);
 int loadFromFile (struct Student students[]);
@@ -20,14 +21,14 @@ void saveToFile (struct Student students[], int count);
 
 int main(void) {
 
-    int choice = 0;
+    int choice = 0; 
     struct Student students [100]; // → array for many students
     //can i use size of ????? ////////
     int count = loadFromFile(students); // load students from the file first, then tell me how many were loaded
   //  int count = 0; // this keep track on how many students are stored (↑ updated to this ↑)
-  /*  for (int i = 0; i < count; i++) { // count = 0 → first student goes into students[0]
-      students[count].id; // → goes inside the “id” slot of that student
-      students[count].name;
+    /*  for (int i = 0; i < count; i++) { // count = 0 → first student goes into students[0]
+        students[count].id; // → goes inside the “id” slot of that student
+        students[count].name;
       students[count].grade;
       count++;
     }*/
@@ -77,18 +78,92 @@ int main(void) {
     return 0;
   }
 
+// HELPER FUNCTION FOR CASE INSENSITIVE
+int strcasecmp_custom (const char *s1, const char *s2) {
+  while (*s1 && *s2){ // this will decide when to stop. when the pointer reaches \0, for ex. while (0 && smth) → false, loop stops
+   if (tolower((unsigned char) *s1) != tolower((unsigned char) *s2)){ // this wll chck for mismatched
+    return 1; 
+   }
+    s1++; // f thy match, move to the nxt ltter
+    s2++;
+  }
+  // loop wll finished bcos alr hit \0
+  return (tolower((unsigned char)*s1) - tolower((unsigned char)*s2)); // this still confused me mb *chck cmmnt
+}
+
 // FUNCTION DEFINITION
 void addStudent(struct Student students[], int *count) { // why void?? (ans)
    printf("\n======== Adding student... ========\n");
-   printf("\nEnter your ID: ");
-   scanf("%d", &students[*count].id); // ← user input // students[0] → first student
+   int newID;
+   int duplicate = 0;
+   int valid; // should be declare outside the do while loop coz this cannot be recognized by while loop
+
+   do {
+    printf("\nEnter your ID: ");
+    scanf("%d", &newID);
+
+    if (newID < 0){
+      printf("Invalid. ID should be positive\n");
+    }
+   } while (newID < 0);
+
+   for (int i = 0; i < *count; i++) {
+    if (students[i].id == newID) {
+      duplicate = 1;
+      break;
+    }
+   }
+
+   if (duplicate){
+    printf("ID already exists!\n");
+    return; // this still confused the fck out of me. again, this function will stop and go back where it was called
+   }
+
+   students[*count].id = newID;
 
    getchar();                 // clears leftover newline from previous scanf
+
+   do {
+   valid = 1; // has input
 
    printf("Enter your Name: ");
    fgets(students[*count].name, sizeof(students[*count].name), stdin); // fgets enter key too with \n after the name
    students[*count].name[strcspn(students[*count].name, "\n")] = 0; // →  it removes the ENTER key (\n) that fgets() saves in the string
    //  scanf("%s", students[count].name); // fgets alr reads the entire line, so scanf is redundant
+
+  /* for (int i = 0; i < *count; i++) {
+     char storedName[100];
+     strcpy(storedName, students[i].name); 
+       for (int j = 0; storedName[j]; j++) {
+         storedName[j] = tolower(storedName[j]);
+         
+       if (strcmp(storedName, students[i].name) == 0){
+         printf("%s", storedName); 
+         break;
+       } 
+     }
+   } */ // LOOOLL IM TIRED ASF
+   // check if it is empty //
+   if (strlen(students[*count].name) == 0) { 
+    valid = 0; // false, theres no input
+   }
+
+   // check if spaces only //
+   int hasLetter = 0; // theres no input
+   
+   for (int i = 0; students[*count].name[i] != '\0'; i++) { // check if only spaces
+    if (!isspace(students[*count].name[i])) {
+      hasLetter = 1; // not just space, means theres an input
+      break;
+    }
+   }
+
+   if (!hasLetter){
+    valid = 0;
+    printf("Name cannot be blank!\n");
+   }
+  } while (!valid); // should continue as long as it's still not valid
+   
 
    printf("Enter your Grade: "); 
    scanf("%f", &students[*count].grade); // ← user input
@@ -111,15 +186,56 @@ void viewStudents(struct Student students[], int count) {
   }
 }
 
-void searchStudent(struct Student students[], int count){
-  printf("\n======== Searching student... ========\n\n");
-  int searchID = 0;
-  printf("Enter the ID of the student: ");
-  scanf("%d", &searchID);
+int searchStudent(struct Student students[], int count){
+  int choice = 0;
+  int searchID;
+  int found = 0;
+  char searchName[100];
 
-  int found = 0; // not found yet
+
+    printf("\n======== Searching student... ========\n\n");
+    printf("1. Search student by ID\n");
+    printf("2. Search student by name\n");
+    printf("Choose: ");
+    scanf("%d", &choice);
+
+    if (choice == 1) {
+      printf("Enter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
+      scanf("%d", &searchID); //prev was on dowhile (ud)
+
+     // found = 0; // not found yet // ig i dont need to reset found here
+      for (int i = 0; i < count; i++) {
+        if (students[i].id == searchID){
+          found = 1;
+          printf("\n======== Student Found ========\n");
+          printf("\nStudent Information:\n");
+          printf("ID: %d\n", students[i].id);
+          printf("Name: %s\n", students[i].name);
+          printf("Grade: %.2f\n", students[i].grade);
+
+        break; // stop searching once found
+     
+      }
+    }
+    if (!found){
+    printf("Error: Student with ID '%d' not found in records.\n", searchID); 
+    }
+
+    printf("Press Enter to Continue...\n");
+    while(getchar() != '\n');
+    getchar();
+  }
+
+  else if (choice == 2) { 
+      while (getchar() != '\n'); // removes the \n from the input buffer from the prev scanf
+      printf("Enter the name of the student: ");
+      
+      fgets(searchName, sizeof(searchName), stdin); // this is for user input (name + \n)
+      searchName[strcspn(searchName, "\n")] = 0; 
+      
+   //  found = 0; // not found yet // same hir as well ig
     for (int i = 0; i < count; i++) {
-      if (students[i].id == searchID){
+        if (strcasecmp_custom(students[i].name, searchName) == 0){
         found = 1;
         printf("\n======== Student Found ========\n");
         printf("\nStudent Information:\n");
@@ -130,11 +246,21 @@ void searchStudent(struct Student students[], int count){
         break; // stop searching once found
       }
     }
+    if (!found){
+    printf("Error: Student '%s' not found in records.\n", searchName); 
+    }
 
-  if (found == 0){
-    printf("\n======== Student not found ========\n");
-  }
-}
+    printf("Press Enter to Continue...\n");
+    // while(getchar() != '\n'); ⁉️⁉️ why this made me to enter twice (ans)
+    getchar();
+    } 
+    
+    if (choice < 1 || choice > 2) {
+    printf("\n=== Invalid Choice! Please select 1 - 2 ===\n");
+    } 
+  } 
+
+   
 
 void deleteStudent (struct Student students[], int *count) {
    printf("\n======== Delete Student ========\n");
@@ -320,14 +446,14 @@ void saveToFile (struct Student students[], int count) {
   Stops the loop early because the student has been deleted — no need to continue scanning.
 
   ⁉️ Why this works without temp ⁉️
-  You don’t need a temporary variable because shifting is always forward.
+  don’t need a temporary variable because shifting is always forward.
   students[j] = students[j+1] safely overwrites the current slot with the next student.
 
   5. case 5 
   Function signature (sorting an array of structs)
   ⁉️ What does bubble sort need? ⁉️
-  a. The array itself → students
-  b. he number of students currently stored → count
+  a. the array itself → students
+  b. the number of students currently stored → count
 
   6. bubbleSort()
   Passing by value vs passing by reference
@@ -359,7 +485,7 @@ void saveToFile (struct Student students[], int count) {
   Pass 3 → next one moves...
   ⁉️ why is the OUTER loop count - 1 ⁉️
   run sorting passes count-1 times
-  because each pass places one element in its final position
+  bcos each pass places one element in its final position
   the last remaining element is automatically sorted
 
   for (int i = 0; i < count - 1; i++) {     
@@ -377,13 +503,26 @@ void saveToFile (struct Student students[], int count) {
   Loop until we reach the end of file or the array is full
   Return the number of students loaded (look in onenote for more info)
 
+  9. int searchStudent(struct Student students[], int count){
+  → while(getchar() != '\n'); 
+   - this made me enter twice bcos of this.
+   - this clears all leftover char, including the \n i just typed for the name.
+  →  getchar();
+   - so now this asks me to enter, which will lead to entering twice
 
+  10. int strcasecmp_custom (const char *s1, const char *s2) {  
+  → return (tolower((unsigned char)*s1) - tolower((unsigned char)*s2)); 
+  A. matched
+    - *s1 and *s2 are both 0 (ASCII)
+    - 0 - 0 = 0
+    - res: 0 (equal strings)
 
-
-
-
-
-      
+  B. prolly one is shorter 
+    - s1 = Mel → s2 = Melie
+    - the loop goes to m, e, l, and s1 hits the end '\0' but s2 is at the letter 'i' 
+    - the loop stops 
+    - 0 - 105 (ASCII)
+    - res: -105 (not 0 so strings r not matched)
   */
 
 /*
