@@ -4,12 +4,15 @@
 
 struct Student { // a structure called Student → this is a data container
   int id;
-  char name[50];
+  char first_name[50];
+  char last_name[50];
   float grade;
 };
 
 int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (DECLARATION)
 void addStudent(struct Student students[], int *count); 
+int isValidName(char name[]); 
+void getValidName(char name[], int size, const char *label); 
 void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
@@ -28,7 +31,7 @@ int main(void) {
   //  int count = 0; // this keep track on how many students are stored (↑ updated to this ↑)
     /*  for (int i = 0; i < count; i++) { // count = 0 → first student goes into students[0]
         students[count].id; // → goes inside the “id” slot of that student
-        students[count].name;
+        students[count].first_name;
       students[count].grade;
       count++;
     }*/
@@ -40,7 +43,7 @@ int main(void) {
       printf("2. View Students\n");
       printf("3. Search Student\n");
       printf("4. Delete Student\n");
-      printf("5. Sort Students by Grade\n");
+      printf("5. Sort Students\n");
       printf("6. Exit\n");
       printf("\nChoose: ");
       scanf("%d", &choice);
@@ -92,11 +95,40 @@ int strcasecmp_custom (const char *s1, const char *s2) {
 }
 
 // FUNCTION DEFINITION
+int isValidName(char name[]) {
+   // check if it is empty // 
+  if (strlen(name) == 0)
+   return 0; 
+
+   // check if spaces only // 
+  for (int i = 0; name[i] != '\0'; i++) {
+   if (!isspace(name[i]))
+   return 1; 
+   } 
+}
+
+void getValidName(char name[], int size, const char *label) {
+   int valid; // should be declare outside the do while loop coz this cannot be recognized by while loop
+   
+   do {
+    valid = 1; // has input
+    printf("%s", label);
+    fgets(name, size, stdin); // fgets enter key too with \n after the first_name and last_name
+
+    name[strcspn(name, "\n")] = 0;
+   
+    if (!isValidName(name)){
+     printf("This cannot be blank or spaces only!\n"); 
+     valid = 0;
+    }
+   } while (!valid); // should continue as long as it's still not valid
+
+}
+
 void addStudent(struct Student students[], int *count) { // why void?? (ans)
    printf("\n======== Adding student... ========\n");
    int newID;
    int duplicate = 0;
-   int valid; // should be declare outside the do while loop coz this cannot be recognized by while loop
 
    do {
     printf("\nEnter your ID: ");
@@ -121,49 +153,15 @@ void addStudent(struct Student students[], int *count) { // why void?? (ans)
 
    students[*count].id = newID;
 
-   getchar();                 // clears leftover newline from previous scanf
+   getchar(); // clears leftover newline from previous scanf
 
-   do {
-   valid = 1; // has input
+   getValidName(students[*count].first_name, 
+                sizeof(students[*count].first_name),
+                "Enter your first name: ");
 
-   printf("Enter your Name: ");
-   fgets(students[*count].name, sizeof(students[*count].name), stdin); // fgets enter key too with \n after the name
-   students[*count].name[strcspn(students[*count].name, "\n")] = 0; // →  it removes the ENTER key (\n) that fgets() saves in the string
-   //  scanf("%s", students[count].name); // fgets alr reads the entire line, so scanf is redundant
-
-  /* for (int i = 0; i < *count; i++) {
-     char storedName[100];
-     strcpy(storedName, students[i].name); 
-       for (int j = 0; storedName[j]; j++) {
-         storedName[j] = tolower(storedName[j]);
-         
-       if (strcmp(storedName, students[i].name) == 0){
-         printf("%s", storedName); 
-         break;
-       } 
-     }
-   } */ // LOOOLL IM TIRED ASF
-   // check if it is empty //
-   if (strlen(students[*count].name) == 0) { 
-    valid = 0; // false, theres no input
-   }
-
-   // check if spaces only //
-   int hasLetter = 0; // theres no input
-   
-   for (int i = 0; students[*count].name[i] != '\0'; i++) { // check if only spaces
-    if (!isspace(students[*count].name[i])) {
-      hasLetter = 1; // not just space, means theres an input
-      break;
-    }
-   }
-
-   if (!hasLetter){
-    valid = 0;
-    printf("Name cannot be blank!\n");
-   }
-  } while (!valid); // should continue as long as it's still not valid
-   
+   getValidName(students[*count].last_name, 
+                sizeof(students[*count].last_name),
+                "Enter your last name: ");
 
    printf("Enter your Grade: "); 
    scanf("%f", &students[*count].grade); // ← user input
@@ -180,7 +178,7 @@ void viewStudents(struct Student students[], int count) {
   printf("-------------------------------------------\n"); 
     for (int i = 0; i < count; i++) {
       printf("ID: %d\n", students[i].id); // i prev use students[count] which always accesses the nxt empty slot
-      printf("Name: %s\n", students[i].name); // → use this to access the stored students
+      printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // → use this to access the stored students
       printf("Grade: %.2f\n", students[i].grade);
       printf("-------------------------------------------\n"); 
   }
@@ -190,7 +188,8 @@ int searchStudent(struct Student students[], int count){
   int choice = 0;
   int searchID;
   int found = 0;
-  char searchName[100];
+  char searchFirst[100];
+  char searchLast[100];
 
 
     printf("\n======== Searching student... ========\n\n");
@@ -210,7 +209,7 @@ int searchStudent(struct Student students[], int count){
           printf("\n======== Student Found ========\n");
           printf("\nStudent Information:\n");
           printf("ID: %d\n", students[i].id);
-          printf("Name: %s\n", students[i].name);
+          printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
           printf("Grade: %.2f\n", students[i].grade);
 
         break; // stop searching once found
@@ -228,26 +227,31 @@ int searchStudent(struct Student students[], int count){
 
   else if (choice == 2) { 
       while (getchar() != '\n'); // removes the \n from the input buffer from the prev scanf
-      printf("Enter the name of the student: ");
+      printf("Enter student's first name: ");
+      fgets(searchFirst, sizeof(searchFirst), stdin); // this is for user input (name + \n)
+      searchFirst[strcspn(searchFirst, "\n")] = 0; 
       
-      fgets(searchName, sizeof(searchName), stdin); // this is for user input (name + \n)
-      searchName[strcspn(searchName, "\n")] = 0; 
+      printf("Enter student's last name: ");
+      fgets(searchLast, sizeof(searchLast), stdin); // this is for user input (name + \n)
+      searchLast[strcspn(searchLast, "\n")] = 0; 
+  
       
    //  found = 0; // not found yet // same hir as well ig
     for (int i = 0; i < count; i++) {
-        if (strcasecmp_custom(students[i].name, searchName) == 0){
+        if (strcasecmp_custom(students[i].first_name, searchFirst) == 0 && 
+            strcasecmp_custom(students[i].last_name, searchLast) == 0){
         found = 1;
         printf("\n======== Student Found ========\n");
         printf("\nStudent Information:\n");
         printf("ID: %d\n", students[i].id);
-        printf("Name: %s\n", students[i].name);
+        printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
         printf("Grade: %.2f\n", students[i].grade);
 
         break; // stop searching once found
       }
     }
     if (!found){
-    printf("Error: Student '%s' not found in records.\n", searchName); 
+    printf("Error: Student '%s %s' not found in records.\n", searchFirst, searchLast); 
     }
 
     printf("Press Enter to Continue...\n");
@@ -275,7 +279,7 @@ void deleteStudent (struct Student students[], int *count) {
          printf("\n======== Student Found ========\n");
          printf("\nStudent Information:\n");
          printf("ID: %d\n", students[i].id);
-         printf("Name: %s\n", students[i].name);
+         printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
          printf("Grade: %.2f\n", students[i].grade);
 
          char userChoice[4]; // for yes or no
@@ -328,10 +332,37 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
 
   for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
     printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
-    printf("Name: %s\n", students[i].name); // j has NO meaning anymore once sorting is finished. ⁉️
+    printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // j has NO meaning anymore once sorting is finished. ⁉️
     printf("Grade: %.2f\n", students[i].grade);
     printf("-------------------------------------------\n"); 
   } 
+
+  printf("\n======== Sorting Student by Name ========\n\n");
+  printf("-------------------------------------------\n");
+  for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
+      for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
+        int cmp = strcasecmp_custom(students[j].last_name,
+                              students[j + 1].last_name);
+        if (cmp == 0){
+            cmp = strcasecmp_custom (students[j].first_name,
+                              students[j + 1].first_name); 
+        }
+        if (cmp > 0){
+            struct Student temp = students[j];
+            students[j] = students[j + 1];
+            students[j + 1] = temp;
+        }
+      }
+   }
+
+  
+
+  for (int i = 0; i < count; i++) { 
+    printf("ID: %d\n", students[i].id);
+    printf("Name: %s, %s\n", students[i].last_name, students[i].first_name);
+    printf("Grade: %.2f\n", students[i].grade);
+    printf("-------------------------------------------\n"); 
+  }
 } // ‼️‼️ I NEED TO SWAP THE WHOLE STRUCT LOL, NOT JUST THE GRADE
  
 int loadFromFile (struct Student students[]) {
@@ -342,7 +373,7 @@ int loadFromFile (struct Student students[]) {
   }
 
   int count = 0;
-  while (fscanf(fp, "%d %49s %f", &students[count].id, students[count].name, &students[count].grade) == 3) {
+  while (fscanf(fp, "%d %49s %f", &students[count].id, students[count].first_name, students[count].last_name, &students[count].grade) == 3) {
     count++;
     if (count >= 100) break; // this is to avoid overflow
   }
@@ -360,7 +391,7 @@ void saveToFile (struct Student students[], int count) {
   }
 
   for (int i = 0; i < count; i++) {
-    fprintf(fp, "%d,%s,%.2f\n", students[i].id, students[i].name, students[i].grade);
+    fprintf(fp, "%d,%s,%.2f\n", students[i].id, students[i].first_name, students[count].last_name, students[i].grade);
     }
 
     fclose(fp);
@@ -391,7 +422,7 @@ void saveToFile (struct Student students[], int count) {
 
             Adding a student:
                 pick the box at index count
-                fill compartments: id, name, grade
+                fill compartments: id, first_name, grade
                 move count++ → next empty box
 
             Viewing students:
@@ -412,8 +443,8 @@ void saveToFile (struct Student students[], int count) {
   Content of page → the fields inside the struct: .id, .name, .grade
 
   VISUALIZATION:
-  students[0] ─> id: 101, name: "Alice", grade: 95.5
-  students[1] ─> id: 102, name: "Bob", grade: 88.0
+  students[0] ─> id: 101, first_name: "Alice", grade: 95.5
+  students[1] ─> id: 102, first_name: "Bob", grade: 88.0
   students[2] ─> empty box
   ...
   count = 2 → next empty box is students[2]
