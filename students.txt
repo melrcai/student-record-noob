@@ -1,5 +1,8 @@
-123,Elijah,0.00
-456,max silas,0.00
-321,Clarence,0.00
-987,belle,0.00
-789,Noah,0.00
+ID NUMBER        NAME               GPA
+123                Navarro, Ethan    1.75
+ID NUMBER        NAME               GPA
+456                Delgado, Sophia    1.25
+ID NUMBER        NAME               GPA
+789                Villanueva, Marcus    2.50
+ID NUMBER        NAME               GPA
+321                Ramirez, Chloe    1.00

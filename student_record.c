@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 4 MARCH 3-8 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 5 MARCH 3-8-9-11 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
 #include <ctype.h> // for tolower function and isspace()
 
@@ -84,14 +84,16 @@ int main(void) {
 // HELPER FUNCTION FOR CASE INSENSITIVE
 int strcasecmp_custom (const char *s1, const char *s2) {
   while (*s1 && *s2){ // this will decide when to stop. when the pointer reaches \0, for ex. while (0 && smth) → false, loop stops
-   if (tolower((unsigned char) *s1) != tolower((unsigned char) *s2)){ // this wll chck for mismatched
-    return 1; 
-   }
+    unsigned char c1 = tolower((unsigned char) *s1);
+    unsigned char c2 = tolower((unsigned char) *s2);    
+    if (c1 != c2){
+     return c1 - c2; // if they are different, return the difference (positive or negative)
+    }     
     s1++; // f thy match, move to the nxt ltter
     s2++;
   }
   // loop wll finished bcos alr hit \0
-  return (tolower((unsigned char)*s1) - tolower((unsigned char)*s2)); // this still confused me mb *chck cmmnt
+  return (tolower((unsigned char)*s1) - tolower((unsigned char)*s2)); // this still confused me mb *chck cmmnt (ans)
 }
 
 // FUNCTION DEFINITION
@@ -101,7 +103,7 @@ int isValidName(char name[]) {
    return 0; 
 
    // check if spaces only // 
-  for (int i = 0; name[i] != '\0'; i++) {
+  for (int i = 0; name[i] != '\0'; i++) { 
    if (!isspace(name[i]))
    return 1; 
    } 
@@ -115,7 +117,7 @@ void getValidName(char name[], int size, const char *label) {
     printf("%s", label);
     fgets(name, size, stdin); // fgets enter key too with \n after the first_name and last_name
 
-    name[strcspn(name, "\n")] = 0;
+    name[strcspn(name, "\n")] = 0; // again, this is to remove the \n from the end of the string that fgets adds. strcspn finds the index of \n n replaces it with \0 to terminate the string properly.
    
     if (!isValidName(name)){
      printf("This cannot be blank or spaces only!\n"); 
@@ -318,50 +320,64 @@ void deleteStudent (struct Student students[], int *count) {
 }
 
 void bubbleSort (struct Student students[], int count) { // 😆😆 prev was int lol. bubble sort usually doesn’t need to return anything, because it modifies the array in place
-  printf("\n======== Sorting Student by Grade ========\n\n");
-  printf("-------------------------------------------\n"); 
-  for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
-      for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
-        if (students[j].grade > students[j + 1].grade) {
-          struct Student temp = students[j];
-          students[j] = students[j + 1];
-          students[j + 1] = temp;
-        }
-      }
-   }
 
-  for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
-    printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
-    printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // j has NO meaning anymore once sorting is finished. ⁉️
-    printf("Grade: %.2f\n", students[i].grade);
+  int choice;
+  
+  printf("\n-------------------------------------------\n\n"); 
+  printf("1. Sort by Grade: \n");
+  printf("2. Sort by Last Name: \n");
+  printf("Choose: ");
+  scanf("%d", &choice);
+  
+  if (choice == 1){
+    printf("\n======== Sorting Student by Grade ========\n\n");
     printf("-------------------------------------------\n"); 
-  } 
-
-  printf("\n======== Sorting Student by Name ========\n\n");
-  printf("-------------------------------------------\n");
-  for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
-      for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
-        int cmp = strcasecmp_custom(students[j].last_name,
-                              students[j + 1].last_name);
-        if (cmp == 0){
-            cmp = strcasecmp_custom (students[j].first_name,
-                              students[j + 1].first_name); 
-        }
-        if (cmp > 0){
+    for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
+        for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
+          if (students[j].grade > students[j + 1].grade) {
             struct Student temp = students[j];
             students[j] = students[j + 1];
             students[j + 1] = temp;
+          }
+        }
+    }
+
+    for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
+      printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
+      printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // j has NO meaning anymore once sorting is finished. ⁉️
+      printf("Grade: %.2f\n", students[i].grade);
+      printf("-------------------------------------------\n"); 
+    }
+  }
+  else if (choice == 2) {
+    printf("\n======== Sorting Student by Last Name ========\n\n");
+    printf("-------------------------------------------\n");
+    
+    for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
+        for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
+          int cmp = strcasecmp_custom (students[j].last_name,
+                                      students[j + 1].last_name);
+          if (cmp == 0){
+              cmp = strcasecmp_custom (students[j].first_name,
+                                      students[j + 1].first_name); 
+          }
+          if (cmp > 0){
+              struct Student temp = students[j];
+              students[j] = students[j + 1];
+              students[j + 1] = temp;
+          }
         }
       }
-   }
 
-  
-
-  for (int i = 0; i < count; i++) { 
-    printf("ID: %d\n", students[i].id);
-    printf("Name: %s, %s\n", students[i].last_name, students[i].first_name);
-    printf("Grade: %.2f\n", students[i].grade);
-    printf("-------------------------------------------\n"); 
+    for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
+          printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
+          printf("Name: %s, %s\n", students[i].last_name, students[i].first_name); // j has NO meaning anymore once sorting is finished. ⁉️
+          printf("Grade: %.2f\n", students[i].grade);
+          printf("-------------------------------------------\n");
+    }
+  }
+  else {
+    printf("\n=== Invalid Choice! Please select 1 - 2 ===\n");
   }
 } // ‼️‼️ I NEED TO SWAP THE WHOLE STRUCT LOL, NOT JUST THE GRADE
  
@@ -373,7 +389,7 @@ int loadFromFile (struct Student students[]) {
   }
 
   int count = 0;
-  while (fscanf(fp, "%d %49s %f", &students[count].id, students[count].first_name, students[count].last_name, &students[count].grade) == 3) {
+  while (fscanf(fp, "%d %49s %49s %f", &students[count].id, students[count].first_name, students[count].last_name, &students[count].grade) == 4) {
     count++;
     if (count >= 100) break; // this is to avoid overflow
   }
@@ -391,7 +407,9 @@ void saveToFile (struct Student students[], int count) {
   }
 
   for (int i = 0; i < count; i++) {
-    fprintf(fp, "%d,%s,%.2f\n", students[i].id, students[i].first_name, students[count].last_name, students[i].grade);
+
+    fprintf(fp, "ID NUMBER        NAME               GPA\n");
+    fprintf(fp, "%d                %s, %s    %.2f\n", students[i].id, students[i].last_name, students[i].first_name, students[i].grade);
     }
 
     fclose(fp);
