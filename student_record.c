@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 5 MARCH 3-8-9-11 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
 #include <ctype.h> // for tolower function and isspace()
 
@@ -17,6 +17,7 @@ void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
 void bubbleSort (struct Student students[], int count);
+void studentReport (struct Student students[], int count);
 int loadFromFile (struct Student students[]);
 void saveToFile (struct Student students[], int count);
 
@@ -44,7 +45,8 @@ int main(void) {
       printf("3. Search Student\n");
       printf("4. Delete Student\n");
       printf("5. Sort Students\n");
-      printf("6. Exit\n");
+      printf("6. View Reports / Analytics\n");
+      printf("7. Exit\n");
       printf("\nChoose: ");
       scanf("%d", &choice);
 
@@ -68,14 +70,19 @@ int main(void) {
         case 5:
           bubbleSort(students, count);  // prev was .grade lol, it must be the wholo struct
           break;
+
         case 6:
+          studentReport(students, count);
+          break;
+
+        case 7:
           saveToFile(students, count);
-          printf("\n======== Exiting... ========\n");
+          printf("\n======== You have exited! ========\n");
           break;
         default:
-          printf("\n=== Invalid Choice! Please select 1 - 6 ===\n");
+          printf("\n=== Invalid Choice! Please select 1 - 7 ===\n");
       }
-    } while (choice != 6); // will repeat menu as long as the user's choice is not 6
+    } while (choice != 7); // will repeat menu as long as the user's choice is not 6
 
 
     return 0;
@@ -86,9 +93,9 @@ int strcasecmp_custom (const char *s1, const char *s2) {
   while (*s1 && *s2){ // this will decide when to stop. when the pointer reaches \0, for ex. while (0 && smth) → false, loop stops
     unsigned char c1 = tolower((unsigned char) *s1);
     unsigned char c2 = tolower((unsigned char) *s2);    
-    if (c1 != c2){
+  if (c1 != c2){
      return c1 - c2; // if they are different, return the difference (positive or negative)
-    }     
+  }     
     s1++; // f thy match, move to the nxt ltter
     s2++;
   }
@@ -266,8 +273,6 @@ int searchStudent(struct Student students[], int count){
     } 
   } 
 
-   
-
 void deleteStudent (struct Student students[], int *count) {
    printf("\n======== Delete Student ========\n");
    printf("Enter the ID of the student to delete: ");
@@ -355,13 +360,13 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
     
     for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
         for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
-          int cmp = strcasecmp_custom (students[j].last_name,
+          int cmp = strcasecmp_custom (students[j].last_name, // if the last name are the same, dont decide yet
                                       students[j + 1].last_name);
-          if (cmp == 0){
+          if (cmp == 0){ // check the first name if the same
               cmp = strcasecmp_custom (students[j].first_name,
                                       students[j + 1].first_name); 
           }
-          if (cmp > 0){
+          if (cmp > 0){ // -value > 0 = stay (false) otherwise, run this if statemet to swap 
               struct Student temp = students[j];
               students[j] = students[j + 1];
               students[j + 1] = temp;
@@ -372,7 +377,7 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
     for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
           printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
           printf("Name: %s, %s\n", students[i].last_name, students[i].first_name); // j has NO meaning anymore once sorting is finished. ⁉️
-          printf("Grade: %.2f\n", students[i].grade);
+          printf("grade: %.2f\n", students[i].grade);
           printf("-------------------------------------------\n");
     }
   }
@@ -381,6 +386,54 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
   }
 } // ‼️‼️ I NEED TO SWAP THE WHOLE STRUCT LOL, NOT JUST THE GRADE
  
+void studentReport (struct Student students[], int count) {
+
+  printf("\n======== Student Report ========\n\n");
+
+  if (count == 0) {
+    printf("There's no record of students!\n");
+    return;
+  }
+
+  double sumofGrades = 0;
+  // assuming the 1st student is the best until proven otherwise
+  double bestGrade = students[0].grade;
+  int bestStudent = 0;
+
+  double worstGrade = students[0].grade;
+  int worstStudent = 0;
+
+  for (int i = 0; i < count; i++) {
+      // GRADE AVERAGE
+      sumofGrades += students[i].grade;
+
+      // check if this student's grade is better (lower) than current best
+      if (students[i].grade < bestGrade){
+        bestGrade = students[i].grade;
+        bestStudent = i; // to rmber who got this grade 
+      }
+
+      // check if this student's grade is worst (higher) than current 
+      if (students[i].grade > worstGrade){
+        worstGrade = students[i].grade;
+        worstStudent = i; // to rmber who got this grade 
+      } 
+    }
+
+    double average = sumofGrades / count; 
+
+    printf("-------------------------------------------\n");
+    printf("Total students: %d\n", count); // TOTAL STUDENTS
+    printf("Average Grade: %.2f\n", average);
+    printf("-------------------------------------------\n");
+    printf("Top student: %s %s\n", students[bestStudent].first_name, students[bestStudent].last_name);
+    printf("grade: %.2f\n\n", students[bestStudent].grade);
+    printf("Lowest student: %s %s\n", students[worstStudent].first_name, students[worstStudent].last_name);
+    printf("grade: %.2f\n", students[worstStudent].grade);
+    printf("-------------------------------------------\n");
+
+  }
+
 int loadFromFile (struct Student students[]) {
   FILE *fp = fopen("students.txt", "r"); // open for reading
   if (fp == NULL) { // ⁉️⁉️ why not *fp?? i feel liek i alr know, i js forgot lol
@@ -408,7 +461,7 @@ void saveToFile (struct Student students[], int count) {
 
   for (int i = 0; i < count; i++) {
 
-    fprintf(fp, "ID NUMBER        NAME               GPA\n");
+   // fprintf(fp, "ID NUMBER        NAME               GPA\n");
     fprintf(fp, "%d                %s, %s    %.2f\n", students[i].id, students[i].last_name, students[i].first_name, students[i].grade);
     }
 
