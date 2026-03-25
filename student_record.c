@@ -1,6 +1,7 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
 #include <ctype.h> // for tolower function and isspace()
+#define TOTAL_WIDTH 50
 
 struct Student { // a structure called Student → this is a data container
   int id;
@@ -13,6 +14,7 @@ int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (D
 void addStudent(struct Student students[], int *count); 
 int isValidName(char name[]); 
 void getValidName(char name[], int size, const char *label); 
+void printCenteredHeader(char* text);
 void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
@@ -37,7 +39,7 @@ int main(void) {
       count++;
     }*/
 
-    printf("======== STUDENT MANAGER ========");
+    printCenteredHeader(" STUDENT MANAGER ");
     do {
       printf("\n\n======== MENU ========\n");
       printf("1. Add Student\n");
@@ -135,8 +137,19 @@ void getValidName(char name[], int size, const char *label) {
 
 }
 
+void printCenteredHeader(char* text) {
+    int textLen = strlen(text);
+    int sidePadding = (TOTAL_WIDTH - textLen) / 2;
+    
+    printf("\n");
+    for(int i = 0; i < sidePadding; i++) printf("=");
+    printf("%s", text);
+    for(int i = 0; i < (TOTAL_WIDTH - textLen - sidePadding); i++) printf("=");
+    printf("\n");
+}
+
 void addStudent(struct Student students[], int *count) { // why void?? (ans)
-   printf("\n======== Adding student... ========\n");
+   printCenteredHeader(" Adding student... ");
    int newID;
    int duplicate = 0;
 
@@ -182,35 +195,33 @@ void addStudent(struct Student students[], int *count) { // why void?? (ans)
 } // 😆😆 LOL I DEFINE THE addStudent BEFORE THE STRUCT. HOW PROGRAM WILL READ THAT IF IT DOESNT KNOW THE struct Student YET LMAO
 
 void viewStudents(struct Student students[], int count) {
-  printf("\n======== Viewing students... ========\n");
-  printf("-------------------------------------------\n"); 
+  printCenteredHeader(" Viewing student... ");
     if (count == 0) {
       printf("There's no record of students!\n");
       printf("-------------------------------------------\n"); 
       return;
     }
   printf("\nStored Student:\n");
-    printf("=========================================================\n");
-    printf("%-6s | %-20s | %8s\n", "ID", "NAME", "Grade");
-    printf("---------------------------------------------------------\n");
+    printf("+========+============================+==========+\n");
+    printf("| %-6s | %-26s | %-8s |\n", "ID", "NAME", "Grade");
+    printf("+========+============================+==========+\n");
     for (int i = 0; i < count; i++) {
       char fullName [100];
       sprintf(fullName, "%s, %s",
               students[i].last_name,
               students[i].first_name);
 
-      printf("%-6d | %-20s | %-8.2f\n", 
+      printf("| %-6d | %-26s | %-8.2f |\n", 
               students[i].id, 
               fullName, 
               students[i].grade); // i prev use students[count] which always accesses the nxt empty slot
   }
 
-    printf("=========================================================\n");
+    printf("+========+============================+==========+\n");
     printf("Press Enter to Continue...\n");
     while(getchar() != '\n');
     getchar();
 }
-
 
 int searchStudent(struct Student students[], int count){
   int choice = 0;
@@ -219,45 +230,45 @@ int searchStudent(struct Student students[], int count){
   char searchFirst[100];
   char searchLast[100];
 
-    printf("\n======== Searching student... ========\n\n");
-    printf("1. Search student by ID\n");
+    printf("\n1. Search student by ID\n");
     printf("2. Search student by name\n");
+    printf("-------------------------------------------------\n");
     printf("Choose: ");
     scanf("%d", &choice);
 
     if (choice == 1) {
-      printf("Enter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
+      printf("\nEnter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
       scanf("%d", &searchID); //prev was on dowhile (ud)
       
-    printf("=========================================================\n");
-    printf("%-6s | %-25s | %-8s\n", "ID", "Name", "Grade");
-    printf("---------------------------------------------------------\n");
+      printf("+========+============================+==========+\n");
+      printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
+      printf("+========+============================+==========+\n");
 
-     // found = 0; // not found yet // ig i dont need to reset found here
-      for (int i = 0; i < count; i++) {
-        if (students[i].id == searchID){
-          found = 1;
+      // found = 0; // not found yet // ig i dont need to reset found here
+        for (int i = 0; i < count; i++) {
+          if (students[i].id == searchID){
+            found = 1;
 
-          char fullName[100]; 
-          // concatenate strings into fullname
-          sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
-                   students[i].last_name,
-                   students[i].first_name);
+            char fullName[100]; 
+            // concatenate strings into fullname
+            sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+                    students[i].last_name,
+                    students[i].first_name);
 
-          printf("%-6d | %-25s | %-8.2f\n",
-                 students[i].id,
-                 fullName,
-                 students[i].grade);
+            printf("| %-6d | %-25s | %-8.2f |\n",
+                  students[i].id,
+                  fullName,
+                  students[i].grade);
 
-        break; // stop searching once found
-     
-      }
+          break; // stop searching once found
+        }
+    } 
 
-    printf("=========================================================\n");
-    }
-    if (!found){
-    printf("Error: Student with ID '%d' not found in records.\n", searchID); 
-    }
+    if (found){
+      printf("+========+============================+==========+\n");
+    } else {
+      printf("Error: Student with ID '%d' not found in records.\n", searchID);
+    } 
 
     printf("Press Enter to Continue...\n");
     while(getchar() != '\n');
@@ -266,7 +277,7 @@ int searchStudent(struct Student students[], int count){
 
   else if (choice == 2) { 
       while (getchar() != '\n'); // removes the \n from the input buffer from the prev scanf
-      printf("Enter student's first name: ");
+      printf("\nEnter student's first name: ");
       fgets(searchFirst, sizeof(searchFirst), stdin); // this is for user input (name + \n)
       searchFirst[strcspn(searchFirst, "\n")] = 0; 
       
@@ -274,25 +285,35 @@ int searchStudent(struct Student students[], int count){
       fgets(searchLast, sizeof(searchLast), stdin); // this is for user input (name + \n)
       searchLast[strcspn(searchLast, "\n")] = 0; 
   
-      
+      printf("+========+============================+==========+\n");
+      printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
+      printf("+========+============================+==========+\n");
    //  found = 0; // not found yet // same hir as well ig
     for (int i = 0; i < count; i++) {
         if (strcasecmp_custom(students[i].first_name, searchFirst) == 0 && 
             strcasecmp_custom(students[i].last_name, searchLast) == 0){
         found = 1;
-        printf("\n======== Student Found ========\n");
-        printf("\nStudent Information:\n");
-        printf("ID: %d\n", students[i].id);
-        printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
-        printf("Grade: %.2f\n", students[i].grade);
+        
+            char fullName[100]; 
+            // concatenate strings into fullname
+            sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+                    students[i].last_name,
+                    students[i].first_name);
+
+            printf("| %-6d | %-26s | %-8.2f |\n",
+                  students[i].id,
+                  fullName,
+                  students[i].grade);
 
         break; // stop searching once found
       }
     }
-    if (!found){
+    if (found){
+      printf("+========+============================+==========+\n");
+    } else {
     printf("Error: Student '%s %s' not found in records.\n", searchFirst, searchLast); 
     }
-
+    
     printf("Press Enter to Continue...\n");
     // while(getchar() != '\n'); ⁉️⁉️ why this made me to enter twice (ans)
     getchar();
@@ -304,21 +325,32 @@ int searchStudent(struct Student students[], int count){
   } 
 
 void deleteStudent (struct Student students[], int *count) {
-   printf("\n======== Delete Student ========\n");
+   printCenteredHeader(" Deleting Student... ");
    printf("Enter the ID of the student to delete: ");
    int searchID = 0;
    scanf("%d", &searchID);
-
    int found = 0; // not found yet // i removed the int coz i declare it alr from case 3??
+
      for (int i = 0; i < *count; i++) {
        if (students[i].id == searchID){
          found = 1;
-         printf("\n======== Student Found ========\n");
-         printf("\nStudent Information:\n");
-         printf("ID: %d\n", students[i].id);
-         printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
-         printf("Grade: %.2f\n", students[i].grade);
 
+         printCenteredHeader(" Student Information: ");
+         printf("\n+========+============================+==========+\n"); // 💔💔 did add a \n coz the above func is malf
+         printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
+         printf("+========+============================+==========+\n");
+            char fullName[100]; 
+            // concatenate strings into fullname
+            sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+                    students[i].last_name,
+                    students[i].first_name);
+
+            printf("| %-6d | %-26s | %-8.2f |\n",
+                  students[i].id,
+                  fullName,
+                  students[i].grade);
+
+         printf("+========+============================+==========+\n");
          char userChoice[4]; // for yes or no
          printf("\n\nAre you sure you want to delete this student? (yes/no) \n");
          scanf("%3s", userChoice); // %3s → reads up to 3 characters to avoid overflow. → userChoice is already an array, so no & needed here.
@@ -358,15 +390,17 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
 
   int choice;
   
-  printf("\n-------------------------------------------\n\n"); 
-  printf("1. Sort by Grade: \n");
-  printf("2. Sort by Last Name: \n");
+  printf("\n1. Sort by Grade\n");
+  printf("2. Sort by Last Name\n");
+  printf("-------------------------------------------------\n");
   printf("Choose: ");
   scanf("%d", &choice);
   
   if (choice == 1){
-    printf("\n======== Sorting Student by Grade ========\n\n");
-    printf("-------------------------------------------\n"); 
+    printCenteredHeader(" Sorting Student by Grade... ");
+    printf("+========+============================+==========+\n");
+    printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
+    printf("+========+============================+==========+\n");
     for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
         for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
           if (students[j].grade > students[j + 1].grade) {
@@ -378,16 +412,27 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
     }
 
     for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
-      printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
-      printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // j has NO meaning anymore once sorting is finished. ⁉️
-      printf("Grade: %.2f\n", students[i].grade);
-      printf("-------------------------------------------\n"); 
+      char fullName[100]; 
+      // concatenate strings into fullname
+      sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+              students[i].last_name,
+              students[i].first_name);
+
+      printf("| %-6d | %-26s | %-8.2f |\n",
+            students[i].id,
+            fullName,
+            students[i].grade);
     }
+    printf("+========+============================+==========+\n");
+    printf("Press Enter to Continue...\n");
+    while(getchar() != '\n');
+    getchar();
   }
   else if (choice == 2) {
-    printf("\n======== Sorting Student by Last Name ========\n\n");
-    printf("-------------------------------------------\n");
-    
+    printCenteredHeader(" Sorting Student by Last Name... ");
+    printf("+========+============================+==========+\n");
+    printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
+    printf("+========+============================+==========+\n");
     for (int i = 0; i < count - 1; i++) {     // ⁉️⁉️⁉️
         for (int j = 0; j < count - 1 - i; j++) { // CONFUSED ASF SA -1 N YAN (ans)
           int cmp = strcasecmp_custom (students[j].last_name, // if the last name are the same, dont decide yet
@@ -405,11 +450,21 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
       }
 
     for (int i = 0; i < count; i++) { // ⁉️ printing i, i → used to traverse the final sorted list
-          printf("ID: %d\n", students[i].id); // j → only exists inside bubbleSort for comparing neighbors
-          printf("Name: %s, %s\n", students[i].last_name, students[i].first_name); // j has NO meaning anymore once sorting is finished. ⁉️
-          printf("grade: %.2f\n", students[i].grade);
-          printf("-------------------------------------------\n");
+      char fullName[100]; 
+      // concatenate strings into fullname
+      sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+              students[i].last_name,
+              students[i].first_name);
+
+      printf("| %-6d | %-25s | %-8.2f |\n",
+            students[i].id,
+            fullName,
+            students[i].grade);
     }
+    printf("+========+============================+==========+\n");
+    printf("Press Enter to Continue...\n");
+    while(getchar() != '\n');
+    getchar();
   }
   else {
     printf("\n=== Invalid Choice! Please select 1 - 2 ===\n");
@@ -418,8 +473,8 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
  
 void studentReport (struct Student students[], int count) {
 
-  printf("\n======== Student Report ========\n\n");
-
+  printCenteredHeader(" Student Report ");
+  
   if (count == 0) {
     printf("There's no record of students!\n");
     return;
