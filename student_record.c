@@ -37,17 +37,18 @@ int main(void) {
       count++;
     }*/
 
-    printf("======== STUDENT MANAGER ========\n");
+    printf("======== STUDENT MANAGER ========");
     do {
-      printf("\nSelect an option\n");
-      printf("\n1. Add Student\n");
+      printf("\n\n======== MENU ========\n");
+      printf("1. Add Student\n");
       printf("2. View Students\n");
       printf("3. Search Student\n");
       printf("4. Delete Student\n");
       printf("5. Sort Students\n");
       printf("6. View Reports / Analytics\n");
       printf("7. Exit\n");
-      printf("\nChoose: ");
+      printf("======================\n");
+      printf("Choose: ");
       scanf("%d", &choice);
 
       switch (choice) {
@@ -183,15 +184,33 @@ void addStudent(struct Student students[], int *count) { // why void?? (ans)
 void viewStudents(struct Student students[], int count) {
   printf("\n======== Viewing students... ========\n");
   printf("-------------------------------------------\n"); 
-  printf("\nStored Student:\n");
-  printf("-------------------------------------------\n"); 
-    for (int i = 0; i < count; i++) {
-      printf("ID: %d\n", students[i].id); // i prev use students[count] which always accesses the nxt empty slot
-      printf("Name: %s %s\n", students[i].first_name, students[i].last_name); // → use this to access the stored students
-      printf("Grade: %.2f\n", students[i].grade);
+    if (count == 0) {
+      printf("There's no record of students!\n");
       printf("-------------------------------------------\n"); 
+      return;
+    }
+  printf("\nStored Student:\n");
+    printf("=========================================================\n");
+    printf("%-6s | %-20s | %8s\n", "ID", "NAME", "Grade");
+    printf("---------------------------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+      char fullName [100];
+      sprintf(fullName, "%s, %s",
+              students[i].last_name,
+              students[i].first_name);
+
+      printf("%-6d | %-20s | %-8.2f\n", 
+              students[i].id, 
+              fullName, 
+              students[i].grade); // i prev use students[count] which always accesses the nxt empty slot
   }
+
+    printf("=========================================================\n");
+    printf("Press Enter to Continue...\n");
+    while(getchar() != '\n');
+    getchar();
 }
+
 
 int searchStudent(struct Student students[], int count){
   int choice = 0;
@@ -199,7 +218,6 @@ int searchStudent(struct Student students[], int count){
   int found = 0;
   char searchFirst[100];
   char searchLast[100];
-
 
     printf("\n======== Searching student... ========\n\n");
     printf("1. Search student by ID\n");
@@ -210,20 +228,32 @@ int searchStudent(struct Student students[], int count){
     if (choice == 1) {
       printf("Enter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
       scanf("%d", &searchID); //prev was on dowhile (ud)
+      
+    printf("=========================================================\n");
+    printf("%-6s | %-25s | %-8s\n", "ID", "Name", "Grade");
+    printf("---------------------------------------------------------\n");
 
      // found = 0; // not found yet // ig i dont need to reset found here
       for (int i = 0; i < count; i++) {
         if (students[i].id == searchID){
           found = 1;
-          printf("\n======== Student Found ========\n");
-          printf("\nStudent Information:\n");
-          printf("ID: %d\n", students[i].id);
-          printf("Name: %s %s\n", students[i].first_name, students[i].last_name);
-          printf("Grade: %.2f\n", students[i].grade);
+
+          char fullName[100]; 
+          // concatenate strings into fullname
+          sprintf (fullName, "%s, %s", // → sprint is a built in function btw = used to fills the empty box of fullname with formatted text
+                   students[i].last_name,
+                   students[i].first_name);
+
+          printf("%-6d | %-25s | %-8.2f\n",
+                 students[i].id,
+                 fullName,
+                 students[i].grade);
 
         break; // stop searching once found
      
       }
+
+    printf("=========================================================\n");
     }
     if (!found){
     printf("Error: Student with ID '%d' not found in records.\n", searchID); 
