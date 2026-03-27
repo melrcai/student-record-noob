@@ -1,5 +1,6 @@
 #include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h> // for tolower function and isspace()
 #define TOTAL_WIDTH 50
 
@@ -201,7 +202,7 @@ void viewStudents(struct Student students[], int count) {
       printf("-------------------------------------------\n"); 
       return;
     }
-  printf("\nStored Student:\n");
+  printf("Stored Student:\n");
     printf("+========+============================+==========+\n");
     printf("| %-6s | %-26s | %-8s |\n", "ID", "NAME", "Grade");
     printf("+========+============================+==========+\n");
@@ -230,13 +231,18 @@ int searchStudent(struct Student students[], int count){
   char searchFirst[100];
   char searchLast[100];
 
-    printf("\n1. Search student by ID\n");
-    printf("2. Search student by name\n");
-    printf("-------------------------------------------------\n");
+    printf("+--------+----------------------------+----------+\n");
+    printCenteredHeader("| HOW DO YOU WANT TO SEARCH? ");
+    printf("+--------+----------------------------+----------+\n");
+    printf("| [1.] Search student by ID |\n");
+    printf("| [2.] Search student by name |\n");
+    printf("+--------+----------------------------+----------+\n");
+
     printf("Choose: ");
     scanf("%d", &choice);
 
     if (choice == 1) {
+      system("cls"); // clear the console for better readability
       printf("\nEnter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
       scanf("%d", &searchID); //prev was on dowhile (ud)
       
@@ -505,6 +511,11 @@ void studentReport (struct Student students[], int count) {
       } 
     }
 
+    printf("Press enter to continue...\n");
+    while (getchar() != '\n'); {
+      getchar(); 
+    }
+    
     double average = sumofGrades / count; 
 
     printf("-------------------------------------------\n");
