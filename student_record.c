@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> // for tolower function and isspace()
@@ -15,7 +15,8 @@ int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (D
 void addStudent(struct Student students[], int *count); 
 int isValidName(char name[]); 
 void getValidName(char name[], int size, const char *label); 
-void printCenteredHeader(char* text);
+void printCentered(char* text, char symbol);
+void printBoxedCentered(char* text);
 void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
@@ -40,17 +41,17 @@ int main(void) {
       count++;
     }*/
 
-    printCenteredHeader(" STUDENT MANAGER ");
+    printCentered(" STUDENT MANAGER ", '=');
     do {
-      printf("\n\n======== MENU ========\n");
+      printCentered(" MENU ", '=');
       printf("1. Add Student\n");
       printf("2. View Students\n");
       printf("3. Search Student\n");
       printf("4. Delete Student\n");
       printf("5. Sort Students\n");
       printf("6. View Reports / Analytics\n");
-      printf("7. Exit\n");
-      printf("======================\n");
+      printf("7. Exit");
+      printCentered("", '=');
       printf("Choose: ");
       scanf("%d", &choice);
 
@@ -138,19 +139,32 @@ void getValidName(char name[], int size, const char *label) {
 
 }
 
-void printCenteredHeader(char* text) {
+void printCentered(char* text, char symbol) {
     int textLen = strlen(text);
     int sidePadding = (TOTAL_WIDTH - textLen) / 2;
     
     printf("\n");
-    for(int i = 0; i < sidePadding; i++) printf("=");
+    for(int i = 0; i < sidePadding; i++) printf("%c", symbol);
     printf("%s", text);
-    for(int i = 0; i < (TOTAL_WIDTH - textLen - sidePadding); i++) printf("=");
+    for(int i = 0; i < (TOTAL_WIDTH - textLen - sidePadding); i++) printf("%c", symbol);
     printf("\n");
 }
 
+void printBoxedCentered(char* text) {
+    int textLen = strlen(text);
+    int totalInside = TOTAL_WIDTH - 2; // subtract 2 for the '|' on each side
+    int sidePadding = (totalInside - textLen) / 2;
+    
+    printf("|");
+    for (int i = 0; i < sidePadding; i++) printf(" "); 
+    printf("%s", text); 
+    for(int i = 0; i < (totalInside - textLen - sidePadding); i++) printf(" ");
+    printf("|\n"); 
+}
+
 void addStudent(struct Student students[], int *count) { // why void?? (ans)
-   printCenteredHeader(" Adding student... ");
+  system("cls"); // clear the console for better readability
+   printCentered(" Adding student... ", ' ');
    int newID;
    int duplicate = 0;
 
@@ -189,14 +203,16 @@ void addStudent(struct Student students[], int *count) { // why void?? (ans)
 
    printf("Enter your Grade: "); 
    scanf("%f", &students[*count].grade); // ← user input
-  
+   printf("--------------------------------------------------\n");
+
    (*count)++; // *count → actual variable in main changes
    // pointers allow us to modify main’s variables directly, so no return value is needed.
    printf("Student added! Current count = %d\n", *count);
 } // 😆😆 LOL I DEFINE THE addStudent BEFORE THE STRUCT. HOW PROGRAM WILL READ THAT IF IT DOESNT KNOW THE struct Student YET LMAO
 
 void viewStudents(struct Student students[], int count) {
-  printCenteredHeader(" Viewing student... ");
+  system("cls");
+  printCentered(" Viewing student... ", ' ');
     if (count == 0) {
       printf("There's no record of students!\n");
       printf("-------------------------------------------\n"); 
@@ -231,12 +247,12 @@ int searchStudent(struct Student students[], int count){
   char searchFirst[100];
   char searchLast[100];
 
-    printf("+--------+----------------------------+----------+\n");
-    printCenteredHeader("| HOW DO YOU WANT TO SEARCH? ");
-    printf("+--------+----------------------------+----------+\n");
-    printf("| [1.] Search student by ID |\n");
-    printf("| [2.] Search student by name |\n");
-    printf("+--------+----------------------------+----------+\n");
+    printf("\n+------------------------------------------------+\n");
+    printBoxedCentered(" HOW DO YOU WANT TO SEARCH? ");
+    printf("+------------------------------------------------+\n");
+    printf("| %-46s |\n", "[1] Search student by ID");
+    printf("| %-46s |\n", "[2] Search student by name");
+    printf("+------------------------------------------------+\n");
 
     printf("Choose: ");
     scanf("%d", &choice);
@@ -273,7 +289,12 @@ int searchStudent(struct Student students[], int count){
     if (found){
       printf("+========+============================+==========+\n");
     } else {
-      printf("Error: Student with ID '%d' not found in records.\n", searchID);
+      char buffer[100]; // temp bucket for the txt
+      // 1. this build the message into the buffer including the variable
+      sprintf(buffer, "Error: Student with ID '%d' not found in records.", searchID);
+      // 2. pass the finished buffer to the func
+      printBoxedCentered(buffer);
+      printf("+================================================+\n");
     } 
 
     printf("Press Enter to Continue...\n");
@@ -282,6 +303,7 @@ int searchStudent(struct Student students[], int count){
   }
 
   else if (choice == 2) { 
+      system("cls"); // clear the console for better readability
       while (getchar() != '\n'); // removes the \n from the input buffer from the prev scanf
       printf("\nEnter student's first name: ");
       fgets(searchFirst, sizeof(searchFirst), stdin); // this is for user input (name + \n)
@@ -317,7 +339,12 @@ int searchStudent(struct Student students[], int count){
     if (found){
       printf("+========+============================+==========+\n");
     } else {
-    printf("Error: Student '%s %s' not found in records.\n", searchFirst, searchLast); 
+      char buffer[100]; // temp bucket for the txt
+      // 1. this build the message into the buffer including the variable
+      sprintf(buffer, "Error: Student '%s %s' not found in records.", searchFirst, searchLast);
+      // 2. pass the finished buffer to the func
+      printBoxedCentered(buffer);
+      printf("+================================================+\n");
     }
     
     printf("Press Enter to Continue...\n");
@@ -331,18 +358,19 @@ int searchStudent(struct Student students[], int count){
   } 
 
 void deleteStudent (struct Student students[], int *count) {
-   printCenteredHeader(" Deleting Student... ");
+   system("cls");
+   printCentered(" Deleting Student... ", ' ');
    printf("Enter the ID of the student to delete: ");
    int searchID = 0;
    scanf("%d", &searchID);
-   int found = 0; // not found yet // i removed the int coz i declare it alr from case 3??
+   int found = 0; // not found yet
 
      for (int i = 0; i < *count; i++) {
        if (students[i].id == searchID){
          found = 1;
 
-         printCenteredHeader(" Student Information: ");
-         printf("\n+========+============================+==========+\n"); // 💔💔 did add a \n coz the above func is malf
+         printCentered(" Student Information: ", ' ');
+         printf("+========+============================+==========+\n"); // 💔💔 did add a \n coz the above func is malf
          printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
          printf("+========+============================+==========+\n");
             char fullName[100]; 
@@ -358,38 +386,46 @@ void deleteStudent (struct Student students[], int *count) {
 
          printf("+========+============================+==========+\n");
          char userChoice[4]; // for yes or no
-         printf("\n\nAre you sure you want to delete this student? (yes/no) \n");
+         printf("\nAre you sure you want to delete this student? (yes/no) \n");
          scanf("%3s", userChoice); // %3s → reads up to 3 characters to avoid overflow. → userChoice is already an array, so no & needed here.
 
-         for (i = 0; userChoice[i]; i++) {
-           userChoice[i] = tolower(userChoice[i]);
+         for (int j = 0; userChoice[j]; j++) {
+           userChoice[j] = tolower(userChoice[j]);
          } // this converts all letters to lowercase before comparing.
         
          if (strcmp(userChoice, "yes") == 0) {  // this becomes true, then print. y == y ✔ , e == e ✔ , // s == s ✔ , // \0 == \0 ✔
-             for (i = 0; i < *count; i++) { // → loops through every student in the array to find the one with searchID
-               if (students[i].id == searchID){ // → checks if the current student matches the ID to delete
-                 // ↓ shift all students after i left ↓ / take not of j = 1 /
                  for (int j = i; j < *count - 1; j++) { // → shifts all students after the deleted one one position to the left:
                    students[j] = students[j + 1];  // shift left, basically overwrite to delete
                  }
                  (*count)--;  // reduce total number of students
-                 printf("Student deleted!\n"); 
+                 printCentered(" Student Deleted! ", '='); 
                  break; // stop loop after deletion
-               }                                    
-             }
          } else if (strcmp(userChoice, "no") == 0) {                           
-             printf("Deletion canceled.\n");                                   
+             printCentered(" Deletion Cancelled ", '=');
          } else {
-             printf("Invalid input!\n");
+             printCentered(" Invalid Input ", '=');
          }
                   
          break; // stop searching once found
        }
      }
 
-   if (found == 0){
-     printf("\n======== Student not found ========\n");
-   }
+    if (found){
+      printf("\n");
+    } else {
+      char buffer[100]; // temp bucket for the txt
+      printf("\n+================================================+\n");
+      // 1. this build the message into the buffer including the variable
+      sprintf(buffer, "Error: Student with ID '%d' not found in records.", searchID);
+      // 2. pass the finished buffer to the func
+      printBoxedCentered(buffer);
+      printf("+================================================+\n");
+    } 
+
+    printf("Press Enter to Continue...\n");
+    while(getchar() != '\n');
+    getchar();
+   
 }
 
 void bubbleSort (struct Student students[], int count) { // 😆😆 prev was int lol. bubble sort usually doesn’t need to return anything, because it modifies the array in place
@@ -403,7 +439,7 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
   scanf("%d", &choice);
   
   if (choice == 1){
-    printCenteredHeader(" Sorting Student by Grade... ");
+    printCentered(" Sorting Student by Grade... ", ' ');
     printf("+========+============================+==========+\n");
     printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
     printf("+========+============================+==========+\n");
@@ -435,7 +471,7 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
     getchar();
   }
   else if (choice == 2) {
-    printCenteredHeader(" Sorting Student by Last Name... ");
+    printCentered(" Sorting Student by Last Name... ", ' ');
     printf("+========+============================+==========+\n");
     printf("| %-6s | %-26s | %-8s |\n", "ID", "Name", "Grade");
     printf("+========+============================+==========+\n");
@@ -479,7 +515,7 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
  
 void studentReport (struct Student students[], int count) {
 
-  printCenteredHeader(" Student Report ");
+  printCentered(" Student Report ", '=');
   
   if (count == 0) {
     printf("There's no record of students!\n");
