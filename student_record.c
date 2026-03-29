@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> // for tolower function and isspace()
@@ -82,7 +82,7 @@ int main(void) {
 
         case 7:
           saveToFile(students, count);
-          printf("\n======== You have exited! ========\n");
+          printCentered(" You have exited! ", '=');
           break;
         default:
           printf("\n=== Invalid Choice! Please select 1 - 7 ===\n");
@@ -247,6 +247,7 @@ int searchStudent(struct Student students[], int count){
   char searchFirst[100];
   char searchLast[100];
 
+    system("cls"); // clear the console for better readability
     printf("\n+------------------------------------------------+\n");
     printBoxedCentered(" HOW DO YOU WANT TO SEARCH? ");
     printf("+------------------------------------------------+\n");
@@ -258,7 +259,6 @@ int searchStudent(struct Student students[], int count){
     scanf("%d", &choice);
 
     if (choice == 1) {
-      system("cls"); // clear the console for better readability
       printf("\nEnter the ID of the student: "); // ⁉️⁉️ now the fckn problem is whenever i found the information of the student, the choices will appear againlol.
       scanf("%d", &searchID); //prev was on dowhile (ud)
       
@@ -277,7 +277,7 @@ int searchStudent(struct Student students[], int count){
                     students[i].last_name,
                     students[i].first_name);
 
-            printf("| %-6d | %-25s | %-8.2f |\n",
+            printf("| %-6d | %-26s | %-8.2f |\n",
                   students[i].id,
                   fullName,
                   students[i].grade);
@@ -430,14 +430,19 @@ void deleteStudent (struct Student students[], int *count) {
 
 void bubbleSort (struct Student students[], int count) { // 😆😆 prev was int lol. bubble sort usually doesn’t need to return anything, because it modifies the array in place
 
+  system("cls");
   int choice;
   
-  printf("\n1. Sort by Grade\n");
-  printf("2. Sort by Last Name\n");
-  printf("-------------------------------------------------\n");
+  printf("\n+------------------------------------------------+\n");
+  printBoxedCentered(" HOW DO YOU WANT TO SORT? ");
+  printf("+------------------------------------------------+\n");
+  printf("| %-46s |\n", "[1] Sort by Grade");
+  printf("| %-46s |\n", "[2] Sort by Last Name");
+  printf("+------------------------------------------------+\n");
+
   printf("Choose: ");
   scanf("%d", &choice);
-  
+
   if (choice == 1){
     printCentered(" Sorting Student by Grade... ", ' ');
     printf("+========+============================+==========+\n");
@@ -509,16 +514,17 @@ void bubbleSort (struct Student students[], int count) { // 😆😆 prev was in
     getchar();
   }
   else {
-    printf("\n=== Invalid Choice! Please select 1 - 2 ===\n");
+   printCentered(" Invalid Choice! Please Select 1 - 2 ", '=');
   }
 } // ‼️‼️ I NEED TO SWAP THE WHOLE STRUCT LOL, NOT JUST THE GRADE
  
 void studentReport (struct Student students[], int count) {
 
+  system("cls");
   printCentered(" Student Report ", '=');
   
   if (count == 0) {
-    printf("There's no record of students!\n");
+    printCentered(" There's no record of students! ", '=');
     return;
   }
 
@@ -547,24 +553,41 @@ void studentReport (struct Student students[], int count) {
       } 
     }
 
-    printf("Press enter to continue...\n");
-    while (getchar() != '\n'); {
-      getchar(); 
-    }
+    
     
     double average = sumofGrades / count; 
 
-    printf("-------------------------------------------\n");
-    printf("Total students: %d\n", count); // TOTAL STUDENTS
-    printf("Average Grade: %.2f\n", average);
-    printf("-------------------------------------------\n");
-    printf("Top student: %s %s\n", students[bestStudent].first_name, students[bestStudent].last_name);
-    printf("grade: %.2f\n\n", students[bestStudent].grade);
-    printf("Lowest student: %s %s\n", students[worstStudent].first_name, students[worstStudent].last_name);
-    printf("grade: %.2f\n", students[worstStudent].grade);
-    printf("-------------------------------------------\n");
+    char buffer[100];
 
-  }
+    printf("+------------------------------------------------+\n");
+    printBoxedCentered(" STATISTICS SUMMARY ");
+    printf("+------------------------------------------------+\n");
+
+    sprintf(buffer, "Total students: %d", count);
+    printf("| %-46s |\n", buffer);
+
+    sprintf(buffer, "Average Grade: %.2f", average);
+    printf("| %-46s |\n", buffer);
+
+    printf("+------------------------------------------------+\n");
+    sprintf(buffer, "Top student: %s %s", students[bestStudent].first_name, students[bestStudent].last_name);
+    printf("| %-46s |\n", buffer);
+
+    sprintf(buffer, "grade: %.2f", students[bestStudent].grade);
+    printf("| %-46s |\n", buffer);
+
+    sprintf(buffer, "Lowest student: %s %s", students[worstStudent].first_name, students[worstStudent].last_name);
+    printf("| %-46s |\n", buffer);
+
+    sprintf(buffer, "grade: %.2f", students[worstStudent].grade);
+    printf("| %-46s |\n", buffer);
+    printf("+------------------------------------------------+\n");
+
+    printf("Press enter to continue...\n");
+      while (getchar() != '\n'); {
+        getchar(); 
+    }
+ } 
 
 int loadFromFile (struct Student students[]) {
   FILE *fp = fopen("students.txt", "r"); // open for reading
@@ -580,25 +603,27 @@ int loadFromFile (struct Student students[]) {
   }
 
   fclose(fp);
-  printf("%d students loaded from file!\n", count);
+  char buffer[100];
+  sprintf(buffer, "%d student/s loaded from file!", count);
+  printCentered(buffer, ' ');
   return count; // return number of students loaded
 }
  
 void saveToFile (struct Student students[], int count) {
   FILE *fp = fopen("students.txt", "w"); // open for writing
   if (fp == NULL) {
-    printf("Error opening file for saving.\n");
+    printCentered("Error opening file for saving.", ' ');
     return;
   }
 
   for (int i = 0; i < count; i++) {
 
    // fprintf(fp, "ID NUMBER        NAME               GPA\n");
-    fprintf(fp, "%d                %s, %s    %.2f\n", students[i].id, students[i].last_name, students[i].first_name, students[i].grade);
+    fprintf(fp, "%d,%s,%s,%.2f\n", students[i].id, students[i].last_name, students[i].first_name, students[i].grade);
     }
 
     fclose(fp);
-    printf("Students saved successfully!\n"); 
+    printCentered("Students saved successfully!", ' ');
 }
  
  

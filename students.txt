@@ -1,2 +1,6 @@
-123                Min, Mel Kaori    1.00
-456                Alvarez, Axel Theo    1.25
+654,Flor,Kyle,1.00
+987,Mizaki,Kaori,1.00
+456,Alvarez,Jared Lim,1.10
+789,Lim Noah,1.50
+123,Cortes,Alyssa Mae,1.75
+321,Bautista,Trisha,2.50
