@@ -343,7 +343,20 @@ int searchStudent(struct Student students[], int count){
       // 1. this build the message into the buffer including the variable
       sprintf(buffer, "Error: Student '%s %s' not found in records.", searchFirst, searchLast);
       // 2. pass the finished buffer to the func
-      printBoxedCentered(buffer);
+      if (strlen(buffer) <= 46) {
+          // if it fits, just print it normally
+          printf("| %-46s |\n", buffer);
+      } else {
+          // if it's too long, split it
+          char line1[47];
+          strncpy(line1, buffer, 46);
+          line1[46] = '\0'; // cap the first 46 chars
+
+          char* line2 = buffer + 46; // the pointer" to the rest of the string
+
+          printf("| %-46s |\n", line1); 
+          printf("| %-46s |\n", line2); 
+      }
       printf("+================================================+\n");
     }
     
