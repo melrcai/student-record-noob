@@ -9,3 +9,5 @@ hoping i'll wake up by 5 am tmr to do sum other thingzz.
 3/26/26 - okay that's enough for tonight, so tired asf. still have a mornign class later by 7:30 am. gladly it's an online class. unfortunately, i havent review the lesson yet from the prev discussion so imma try to wake up by 5am. ahhh fck ths. he's also terror and one of the tenuref profs. fckfckfck
 
 3/29/26 - bro, im nearly finished w ts and im planning to move on and learn c++ yll. i'll make small programs like this still, using c, js to retain my knowlodge abt ths shii
+
+3/31/26 - ahhh, i fckn feel im so unproductive today. im gonna lock in tmr i swear ahhhhhhhh
