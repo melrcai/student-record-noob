@@ -1,22 +1,28 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29 // DANG, IM TIRED ASF. NEEDED TO COMPLETE TOLOWER SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h> // for tolower function and isspace()
+#include <ctype.h> 
 #define TOTAL_WIDTH 50
 
-struct Student { // a structure called Student → this is a data container
+struct Student { 
   int id;
   char first_name[50];
   char last_name[50];
   float grade;
 };
 
+struct User { 
+  char username[50];
+  char password[50];
+};
+
 int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (DECLARATION)
-void addStudent(struct Student students[], int *count); 
 int isValidName(char name[]); 
 void getValidName(char name[], int size, const char *label); 
 void printCentered(char* text, char symbol);
 void printBoxedCentered(char* text);
+void UserLogin(struct User user[], int *userCount);
+void addStudent(struct Student students[], int *count); 
 void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
 void deleteStudent(struct Student students[], int *count);
@@ -31,6 +37,7 @@ int main(void) {
 
     int choice = 0; 
     struct Student students [100]; 
+    struct User user [100]; 
     int count = loadFromFile(students); 
     
     printCentered(" STUDENT MANAGER ", '=');
@@ -154,6 +161,10 @@ void printBoxedCentered(char* text) {
     printf("|\n"); 
 }
 
+void UserLogin(struct User user[], int *userCount) {
+    
+
+}
 void addStudent(struct Student students[], int *count) { 
   system("cls"); 
    printCentered(" Adding student... ", ' ');
