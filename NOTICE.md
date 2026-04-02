@@ -11,3 +11,5 @@ hoping i'll wake up by 5 am tmr to do sum other thingzz.
 3/29/26 - bro, im nearly finished w ts and im planning to move on and learn c++ yll. i'll make small programs like this still, using c, js to retain my knowlodge abt ths shii
 
 3/31/26 - ahhh, i fckn feel im so unproductive today. im gonna lock in tmr i swear ahhhhhhhh
+
+4/02/26 - yay, i can finally play stray. this is enough for the meantime mwehehrhehehrhwhrh
