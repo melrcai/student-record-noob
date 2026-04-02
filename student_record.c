@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> 
@@ -39,7 +39,7 @@ int main(void) {
     struct Student students [100]; 
     struct User user [100]; 
     int count = loadFromFile(students); 
-    
+    UserLogin(user, &count);
     printCentered(" STUDENT MANAGER ", '=');
     do {
       printCentered(" MENU ", '=');
@@ -162,9 +162,41 @@ void printBoxedCentered(char* text) {
 }
 
 void UserLogin(struct User user[], int *userCount) {
-    
+  strcpy(user[0].username, "mel");
+  strcpy(user[0].password, "mel123");
+  *userCount = 1; // one user alrexists
+  char inputUsername[50];
+  char inputPassword[50];
+  int attempts = 0;
+  int authenticated = 0;
 
+  while (attempts < 3 && !authenticated) {
+    printf("Login: ");
+    scanf("%s", inputUsername);
+    printf("Password: ");
+    scanf("%s", inputPassword);
+
+    for (int i = 0; i < *userCount; i++) {
+      if (strcmp(user[i].username, inputUsername) == 0 &&
+          strcmp(user[i].password, inputPassword) == 0) {
+        authenticated = 1;
+        break;
+      }
+    }
+    if (!authenticated) {
+      printf("Invalid username or password. Please try again.\n\n");
+      attempts++;
+    }
+  }
+
+  if (attempts == 3 && !authenticated) {
+    printf("Too many failed attempts. Exiting program.\n");
+    exit(1); 
+    } else {
+    printCentered(" Login Successful! ", '=');
+  }
 }
+
 void addStudent(struct Student students[], int *count) { 
   system("cls"); 
    printCentered(" Adding student... ", ' ');
