@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02-03 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> 
@@ -14,6 +14,7 @@ struct Student {
 struct User { 
   char username[50];
   char password[50];
+  int isAdmin;
 };
 
 int strcasecmp_custom (const char *s1, const char *s2); // FUNCTION PROTOTYPE (DECLARATION)
@@ -21,7 +22,9 @@ int isValidName(char name[]);
 void getValidName(char name[], int size, const char *label); 
 void printCentered(char* text, char symbol);
 void printBoxedCentered(char* text);
-void UserLogin(struct User user[], int *userCount);
+void admin(struct Student students[], int *userCount);
+void student(struct Student students[], int *studentCount);
+void UserLogin(struct User user[], int *xstudentCount, struct Student students[], int *ystudentCount);
 void addStudent(struct Student students[], int *count); 
 void viewStudents(struct Student students[], int count);
 int searchStudent(struct Student students[], int count);
@@ -35,62 +38,13 @@ void saveToFile (struct Student students[], int count);
 
 int main(void) {
 
-    int choice = 0; 
     struct Student students [100]; 
     struct User user [100]; 
-    int count = loadFromFile(students); 
-    UserLogin(user, &count);
-    printCentered(" STUDENT MANAGER ", '=');
-    do {
-      printCentered(" MENU ", '=');
-      printf("1. Add Student\n");
-      printf("2. View Students\n");
-      printf("3. Search Student\n");
-      printf("4. Delete Student\n");
-      printf("5. Sort Students\n");
-      printf("6. View Reports / Analytics\n");
-      printf("7. Exit");
-      printCentered("", '=');
-      printf("Choose: ");
-      scanf("%d", &choice);
-
-      switch (choice) {
-        case 1:
-          addStudent(students, &count);
-          break;
-
-        case 2:
-          viewStudents(students, count);
-          break;
-
-        case 3:  
-          searchStudent(students, count);
-          break;
-        
-        case 4:
-          deleteStudent(students, &count);
-          break;
-
-        case 5:
-          bubbleSort(students, count);  
-          break;
-
-        case 6:
-          studentReport(students, count);
-          break;
-
-        case 7:
-          saveToFile(students, count);
-          printCentered(" You have exited! ", '=');
-          break;
-        default:
-          printf("\n=== Invalid Choice! Please select 1 - 7 ===\n");
-      }
-    } while (choice != 7); 
-
-
+    int studentCount = loadFromFile(students); 
+    int userCount =  0;
+    UserLogin(user, &userCount, students, &studentCount);
     return 0;
-  }
+}
 
 // HELPER FUNCTION FOR CASE INSENSITIVE
 int strcasecmp_custom (const char *s1, const char *s2) {
@@ -161,14 +115,108 @@ void printBoxedCentered(char* text) {
     printf("|\n"); 
 }
 
-void UserLogin(struct User user[], int *userCount) {
-  strcpy(user[0].username, "mel");
-  strcpy(user[0].password, "mel123");
-  *userCount = 1; // one user alrexists
+void admin(struct Student students[], int *userCount) {
+    int choice = 0; 
+  printCentered(" STUDENT MANAGER ", '=');
+  do {
+    printCentered(" ADMIN PANEL ", '=');
+    printf("1. Add Student\n");
+    printf("2. View Students\n");
+    printf("3. Search Student\n");
+    printf("4. Delete Student\n");
+    printf("5. Sort Students\n");
+    printf("6. View Reports / Analytics\n");
+    printf("7. Exit");
+    printCentered("", '=');
+    printf("Choose: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+      case 1:
+        addStudent(students, userCount);
+        break;
+
+      case 2:
+        viewStudents(students, *userCount);
+        break;
+
+      case 3:  
+        searchStudent(students, *userCount);
+        break;
+      
+      case 4:
+        deleteStudent(students, userCount);
+        break;
+
+      case 5:
+        bubbleSort(students, *userCount);  
+        break;
+
+      case 6:
+        studentReport(students, *userCount);
+        break;
+
+      case 7:
+        saveToFile(students, *userCount);
+        printCentered(" You have exited! ", '=');
+        break;
+      default:
+        printCentered(" Invalid Choice! Please select 1 -  7", '=');
+
+    }
+  } while (choice != 7); 
+
+}
+
+void student(struct Student students[], int *studentCount) {
+  int choice = 0;
+  do {
+  printCentered(" Student Panel ", '=');
+    printf("1. View Student\n");
+    printf("2. Search Students\n");
+    printf("3. Sort Student\n");
+    printf("4. Exit");
+    printCentered("", '=');
+    printf("Choose: ");
+    scanf("%d", &choice);
+
+    switch (choice) {
+    case 1:
+      viewStudents(students, *studentCount);
+      break;
+    case 2:
+      searchStudent(students, *studentCount);
+      break;
+    case 3:
+      bubbleSort(students, *studentCount);
+      break; 
+    case 4:
+      printCentered(" You have exited! ", '=');
+      break;
+    default:
+      printCentered(" Invalid Choice! Please select 1 -  7", '=');
+      break;
+    }
+  } while (choice != 4);
+  
+}
+
+void UserLogin(struct User user[], int *userCount, struct Student students[], int *studentCount) {
+
+  strcpy(user[0].username, "admin");
+  strcpy(user[0].password, "admin123");
+  user[0].isAdmin = 1; //admin account
+
+  strcpy(user[1].username, "mel");
+  strcpy(user[1].password, "mel123");
+  user[1].isAdmin = 0; //student account
+
+  *userCount = 2; // two users alr exist
   char inputUsername[50];
   char inputPassword[50];
   int attempts = 0;
   int authenticated = 0;
+  int loggedInIndex = -1;
 
   while (attempts < 3 && !authenticated) {
     printf("Login: ");
@@ -180,20 +228,28 @@ void UserLogin(struct User user[], int *userCount) {
       if (strcmp(user[i].username, inputUsername) == 0 &&
           strcmp(user[i].password, inputPassword) == 0) {
         authenticated = 1;
+        loggedInIndex = i;
         break;
       }
     }
-    if (!authenticated) {
-      printf("Invalid username or password. Please try again.\n\n");
-      attempts++;
+
+  if (!authenticated) {
+    attempts++; // Add this so the counter actually goes up!
+    printf("Invalid credentials. %d attempt/s left.\n", 3 - attempts);
     }
   }
 
-  if (attempts == 3 && !authenticated) {
-    printf("Too many failed attempts. Exiting program.\n");
-    exit(1); 
+if (authenticated) {
+  printCentered(" Login Successful! ", ' ');
+  
+    if (user[loggedInIndex].isAdmin == 1) {
+        admin(students, studentCount);
     } else {
-    printCentered(" Login Successful! ", '=');
+        student(students, studentCount);
+    }
+} else {
+    printCentered(" Too many failed attempts. Exiting program. ", ' ');
+    exit(1); 
   }
 }
 
