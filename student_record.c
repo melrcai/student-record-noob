@@ -23,7 +23,7 @@ void getValidName(char name[], int size, const char *label);
 void printCentered(char* text, char symbol);
 void printBoxedCentered(char* text);
 void admin(struct Student students[], int *userCount);
-void student(struct Student students[], int *studentCount);
+void student(struct Student students[], int studentCount);
 void UserLogin(struct User user[], int *xstudentCount, struct Student students[], int *ystudentCount);
 void addStudent(struct Student students[], int *count); 
 void viewStudents(struct Student students[], int count);
@@ -115,8 +115,8 @@ void printBoxedCentered(char* text) {
     printf("|\n"); 
 }
 
-void admin(struct Student students[], int *userCount) {
-    int choice = 0; 
+void admin(struct Student students[], int *studentCount) {
+  int choice = 0; 
   printCentered(" STUDENT MANAGER ", '=');
   do {
     printCentered(" ADMIN PANEL ", '=');
@@ -133,31 +133,31 @@ void admin(struct Student students[], int *userCount) {
 
     switch (choice) {
       case 1:
-        addStudent(students, userCount);
+        addStudent(students, studentCount);
         break;
 
       case 2:
-        viewStudents(students, *userCount);
+        viewStudents(students, *studentCount);
         break;
 
       case 3:  
-        searchStudent(students, *userCount);
+        searchStudent(students, *studentCount);
         break;
       
       case 4:
-        deleteStudent(students, userCount);
+        deleteStudent(students, studentCount);
         break;
 
       case 5:
-        bubbleSort(students, *userCount);  
+        bubbleSort(students, *studentCount);  
         break;
 
       case 6:
-        studentReport(students, *userCount);
+        studentReport(students, *studentCount);
         break;
 
       case 7:
-        saveToFile(students, *userCount);
+        saveToFile(students, *studentCount);
         printCentered(" You have exited! ", '=');
         break;
       default:
@@ -168,7 +168,7 @@ void admin(struct Student students[], int *userCount) {
 
 }
 
-void student(struct Student students[], int *studentCount) {
+void student(struct Student students[], int studentCount) {
   int choice = 0;
   do {
   printCentered(" Student Panel ", '=');
@@ -182,13 +182,13 @@ void student(struct Student students[], int *studentCount) {
 
     switch (choice) {
     case 1:
-      viewStudents(students, *studentCount);
+      viewStudents(students, studentCount);
       break;
     case 2:
-      searchStudent(students, *studentCount);
+      searchStudent(students, studentCount);
       break;
     case 3:
-      bubbleSort(students, *studentCount);
+      bubbleSort(students, studentCount);
       break; 
     case 4:
       printCentered(" You have exited! ", '=');
@@ -245,7 +245,7 @@ if (authenticated) {
     if (user[loggedInIndex].isAdmin == 1) {
         admin(students, studentCount);
     } else {
-        student(students, studentCount);
+        student(students, *studentCount);
     }
 } else {
     printCentered(" Too many failed attempts. Exiting program. ", ' ');
@@ -383,8 +383,17 @@ int searchStudent(struct Student students[], int count){
       char buffer[100]; // temp bucket for the txt
       // 1. this build the message into the buffer including the variable
       sprintf(buffer, "Error: Student with ID '%d' not found in records.", searchID);
-      // 2. pass the finished buffer to the func
-      printBoxedCentered(buffer);
+      if (strlen(buffer) <= 46) {
+        printf("| %-46s |\n", buffer);
+      } else {
+        char line1[47];
+        strncpy(line1, buffer, 46);
+        line1[46] = '\0';
+
+        char* line2 = buffer + 46;
+        printf("| %-46s |\n", line1);
+        printf("| %-46s |\n", line2);
+      }
       printf("+================================================+\n");
     } 
 
