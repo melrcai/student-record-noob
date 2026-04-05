@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02-03 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
+#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02-03-04 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> 
@@ -521,15 +521,25 @@ void deleteStudent (struct Student students[], int *count) {
        }
      }
 
-    if (found){
-      printf("\n");
-    } else {
+    if (!found){
+      
+      printf("+================================================+\n");
       char buffer[100]; 
-      printf("\n+================================================+\n");
-      // 1. this build the message into the buffer including the variable
       sprintf(buffer, "Error: Student with ID '%d' not found in records.", searchID);
-      // 2. pass the finished buffer to the func
-      printBoxedCentered(buffer);
+      
+      if (strlen(buffer) <= 46){
+       printf("| %-46s |\n", buffer); 
+      } else {
+        char line1[47];
+        strncpy(line1, buffer, 46);
+        line1[46] = '\0';
+
+        char* line2 = buffer + 46;
+
+        printf("| %-46s |\n", line1); 
+        printf("| %-46s |\n", line2); 
+        
+      }
       printf("+================================================+\n");
     } 
 
@@ -539,8 +549,7 @@ void deleteStudent (struct Student students[], int *count) {
    
 }
 
-void bubbleSort (struct Student students[], int count) { // 😆😆 prev was int lol. bubble sort usually doesn’t need to return anything, because it modifies the array in place
-
+void bubbleSort (struct Student students[], int count) { 
   system("cls");
   int choice;
   
