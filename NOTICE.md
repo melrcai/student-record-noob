@@ -13,3 +13,5 @@ hoping i'll wake up by 5 am tmr to do sum other thingzz.
 3/31/26 - ahhh, i fckn feel im so unproductive today. im gonna lock in tmr i swear ahhhhhhhh
 
 4/02/26 - yay, i can finally play stray. this is enough for the meantime mwehehrhehehrhwhrh
+
+4/04/26 - this is actually the final version, but i’m still stuck on one issue. when i log in as an admin and add students, then exit and log in as a student, all the added students show up as just one. i’ll prolly fix this after my midterms and finals :P

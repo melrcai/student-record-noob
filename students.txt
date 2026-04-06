@@ -1,6 +1,7 @@
-654,Flor,Kyle,1.00
-987,Mizaki,Kaori,1.00
-456,Alvarez,Jared Lim,1.10
-789,Lim Noah,1.50
-123,Cortes,Alyssa Mae,1.75
-321,Bautista,Trisha,2.50
+321,Anderson,Maximillian,1.00
+369,Beer,Madison,5.00
+987,Carter,Noah,2.00
+789,Johnson,Olivia Harper,1.25
+456,Miller,Jacob Alexander,2.00
+123,Thompson,Emily Max,1.50
+654,Williams,Claire,1.25

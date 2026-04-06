@@ -1,4 +1,4 @@
-#include <stdio.h> // DAY 7 MARCH 3-8-9-11-19-20-26-28-29-31-02-03-04 // DANG, IM TIRED ASF. NEEDED TO COMPLETE THIS SHII
+#include <stdio.h> 
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h> 
@@ -234,7 +234,7 @@ void UserLogin(struct User user[], int *userCount, struct Student students[], in
     }
 
   if (!authenticated) {
-    attempts++; // Add this so the counter actually goes up!
+    attempts++;
     printf("Invalid credentials. %d attempt/s left.\n", 3 - attempts);
     }
   }
@@ -297,7 +297,7 @@ void addStudent(struct Student students[], int *count) {
    printf("--------------------------------------------------\n");
 
    (*count)++; // *count → actual variable in main changes
-   // pointers allow us to modify main’s variables directly, so no return value is needed.
+   // pointers allow us to modify main’s variables directly, so no return value is needed
    printf("Student added! Current count = %d\n", *count);
 } 
 
@@ -452,7 +452,7 @@ int searchStudent(struct Student students[], int count){
           strncpy(line1, buffer, 46);
           line1[46] = '\0'; // cap the first 46 chars
 
-          char* line2 = buffer + 46; // the pointer" to the rest of the string
+          char* line2 = buffer + 46; // the pointer to the rest of the string
 
           printf("| %-46s |\n", line1); 
           printf("| %-46s |\n", line2); 
@@ -498,11 +498,11 @@ void deleteStudent (struct Student students[], int *count) {
          printf("+========+============================+==========+\n");
          char userChoice[4]; // for yes or no
          printf("\nAre you sure you want to delete this student? (yes/no) \n");
-         scanf("%3s", userChoice); // %3s → reads up to 3 characters to avoid overflow. → userChoice is already an array, so no & needed here.
+         scanf("%3s", userChoice); // %3s → reads up to 3 characters to avoid overflow. → userChoice is already an array, so no & needed here
 
          for (int j = 0; userChoice[j]; j++) {
            userChoice[j] = tolower(userChoice[j]);
-         } // this converts all letters to lowercase before comparing.
+         } // this converts all letters to lowercase before comparing
         
          if (strcmp(userChoice, "yes") == 0) {  
                  for (int j = i; j < *count - 1; j++) {
@@ -621,7 +621,7 @@ void bubbleSort (struct Student students[], int count) {
               students[i].last_name,
               students[i].first_name);
 
-      printf("| %-6d | %-25s | %-8.2f |\n",
+      printf("| %-6d | %-26s | %-8.2f |\n",
             students[i].id,
             fullName,
             students[i].grade);
