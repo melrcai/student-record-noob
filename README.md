@@ -14,10 +14,10 @@ To my future self: there’s probably not much to see here, and you’re likely 
 ---
 
 ## How It Works
-The program uses a menu-based interface displayed in the terminal.  
-- To log in as an Admin: admin/admin123
-- To log in as a Student: mel/mel123
-Users select an option by entering a number corresponding to an action.  
+The program uses a menu-based interface displayed in the terminal.<br><br>
+To log in as an Admin: admin/admin123<br>
+To log in as a Student: mel/mel123<br><br>
+Users select an option by entering a number corresponding to an action.<br>
 Student data is stored in a file so records remain saved even after closing the program.
 
 ---
