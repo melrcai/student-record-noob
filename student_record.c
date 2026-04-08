@@ -219,7 +219,7 @@ void UserLogin(struct User user[], int *userCount, struct Student students[], in
   int loggedInIndex = -1;
 
   while (attempts < 3 && !authenticated) {
-    printf("Login: ");
+    printf("\nLogin: ");
     scanf("%s", inputUsername);
     printf("Password: ");
     scanf("%s", inputPassword);
