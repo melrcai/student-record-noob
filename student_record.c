@@ -715,7 +715,11 @@ int loadFromFile (struct Student students[]) {
   }
 
   int count = 0;
-  while (fscanf(fp, "%d %49s %49s %f", &students[count].id, students[count].first_name, students[count].last_name, &students[count].grade) == 4) {
+  while (fscanf(fp, "%d,%49[^,],%49[^,],%f\n", // ! comma separated values instead of spaces
+                &students[count].id, 
+                students[count].first_name, 
+                students[count].last_name, 
+                &students[count].grade) == 4) {
     count++;
     if (count >= 100) break; // this is to avoid overflow
   }
@@ -735,7 +739,11 @@ void saveToFile (struct Student students[], int count) {
   }
 
   for (int i = 0; i < count; i++) {
-    fprintf(fp, "%d,%s,%s,%.2f\n", students[i].id, students[i].last_name, students[i].first_name, students[i].grade);
+    fprintf(fp, "%d,%s,%s,%.2f\n", 
+            students[i].id, 
+            students[i].last_name, 
+            students[i].first_name, 
+            students[i].grade);
     }
 
     fclose(fp);
